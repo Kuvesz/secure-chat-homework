@@ -1,0 +1,4 @@
+A design érthető és alapvetően jó is lenne, de a dokumentum hiányos. Miért nem definiáltátok az üzenetek formátumát rendesen? A legzavaróbb, hogy nem látom hol van az üzenetekben az aláírás és a rejtjelezés. Minden protokoll üzenet csak a tartalmát és a típusát tartalmazza lényegében, de ebből nem látszik, hogy rejtjelezve van-e és ha igen melyik rejtjelezővel (aszimmetrikus vagy szimmetrikus). Az sem látszik, hogy alá van-e írva, és ha igen, akkor mi van pontosan aláírva. Pl. CBC módot használtok és random IV-t küldtök át, de hol és ez alá van-e írva?
+
+
+Mégegy dolog ami nem tetszik, hogy ha jól értem, akkor ugyanazt a kulcspárt használjátok aláírásra és rejtjelezésre, pl a ShareKey üzenetben. Ez nem igazán jó gyakorlat, jobb lenne külön kulcspárt használni a rejtjelezéshez és az aláíráshoz.

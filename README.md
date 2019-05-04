@@ -1,4 +1,4 @@
 # secure-chat-homework
-Fostos házi
+Házi
 
 Ez a Biztonsági protokollok házihoz van. Jó lesz az.
