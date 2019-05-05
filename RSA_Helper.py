@@ -58,7 +58,7 @@ def decrypt(key, ciphertext):
     """
     Simple RSA decrypt function
 
-    :param privkey: Private key to decrypt with
+    :param key: Key to decrypt with
     :param ciphertext: Bytes to decrypt
     :return: Decrypted bytes
     """
