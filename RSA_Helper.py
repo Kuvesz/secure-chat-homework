@@ -45,8 +45,8 @@ def encrypt(pubkey, plaintext):
     Simple RSA encrypt function
 
     :param pubkey: Public key to encrypt with
-    :param plaintext: Text to encrypt
-    :return: Encrypted text
+    :param plaintext: Bytes to encrypt
+    :return: Encrypted bytes
     """
     cipher = PKCS1_OAEP.new(pubkey)
     ciphertext = cipher.encrypt(plaintext)
@@ -59,8 +59,8 @@ def decrypt(key, ciphertext):
     Simple RSA decrypt function
 
     :param privkey: Private key to decrypt with
-    :param ciphertext: Text to decrypt
-    :return: Decrypted text
+    :param ciphertext: Bytes to decrypt
+    :return: Decrypted bytes
     """
     cipher = PKCS1_OAEP.new(key)
     plaintext = cipher.decrypt(ciphertext)
