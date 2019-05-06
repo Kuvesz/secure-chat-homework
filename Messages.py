@@ -70,3 +70,25 @@ def create_KEY_message(aes_key, pub_key, sign_key, sender):
     data = ciphertext + sign
 
     return data
+
+
+def create_END_message(aes_key, sign_key, sender):
+    """
+    Create END type message. This type of message is for terminating connection.
+
+    :param aes_key: Key to CBC
+    :param sign_key: Key to sign with
+    :param sender: string - Source of the message
+    :return: The framed message
+    """
+    msgtype = "END".encode('utf-8')
+    timestamp = int(time.time()).to_bytes(5, 'big')
+    sender = sender.encode('utf-8')
+
+    plaintext = timestamp + sender
+    iv, ciphertext = AES.encrypt(aes_key, plaintext)
+    data = msgtype + iv + ciphertext
+    sign = Sign.generate_signature(data, sign_key)
+    data = data + sign
+
+    return data
