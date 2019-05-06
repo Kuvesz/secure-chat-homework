@@ -21,9 +21,9 @@ def create_DAT_message(msg, key, sign_key, sender):
     msg = msg.encode('utf-8')
 
     plaintext = timestamp + sender + msg
-    sign = Sign.generate_signature(plaintext, sign_key)
-    plaintext = plaintext + sign
     iv, ciphertext = AES.encrypt(key, plaintext)
     data = msgtype + iv + ciphertext
+    sign = Sign.generate_signature(data, sign_key)
+    data = data + sign
 
     return data
