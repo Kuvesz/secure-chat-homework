@@ -33,3 +33,13 @@ def decrypt(key, ciphertext, iv):
     plaintext = Padding.unpad(plaintext, AES.block_size)
 
     return plaintext
+
+def generate_key():
+    """
+    Generate 256 bit long key
+
+    :return: Key
+    """
+    key = get_random_bytes(2 * AES.block_size)
+
+    return key
