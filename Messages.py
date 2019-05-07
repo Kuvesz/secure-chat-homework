@@ -22,7 +22,6 @@ def create_DAT_message(msg, aes_key, sign_key, sender):
 
     rand = get_random_bytes(1)
     rand = int.from_bytes(rand, 'big')
-    print(rand)
     filler = (' '*rand).encode('utf-8')
     msg = msg + filler
 
