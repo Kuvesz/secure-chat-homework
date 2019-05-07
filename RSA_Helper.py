@@ -12,12 +12,12 @@ def generate_keypair():
     return key
 
 
-def export_keypair(file_name, key):
+def export_key(file_name, key):
     """
-    Export the RSA keypair into a file
+    Export the RSA key or keypair into a file
 
     :param file_name: File name to export
-    :param key: Key to eyport
+    :param key: Key to export
     :return: None
     """
     ofile = open(file_name, 'w')
@@ -25,9 +25,9 @@ def export_keypair(file_name, key):
     ofile.close()
 
 
-def import_keypair(file_name):
+def import_key(file_name):
     """
-    Import the RSA keypair from a file
+    Import the RSA key or keypair from a file
 
     :param file_name: File name from import
     :return: Keypair
