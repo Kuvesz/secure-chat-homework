@@ -1,6 +1,7 @@
 import RSA_Helper as RSA
 import Signature_Helper as Sign
 import AES_Helper as AES
+from Crypto.Random import get_random_bytes
 import time
 
 
@@ -18,6 +19,12 @@ def create_DAT_message(msg, aes_key, sign_key, sender):
     timestamp = int(time.time()).to_bytes(5, 'big')
     sender = sender.encode('utf-8')
     msg = msg.encode('utf-8')
+
+    rand = get_random_bytes(1)
+    rand = int.from_bytes(rand, 'big')
+    print(rand)
+    filler = (' '*rand).encode('utf-8')
+    msg = msg + filler
 
     plaintext = timestamp + sender + msg
     iv, ciphertext = AES.encrypt(aes_key, plaintext)
