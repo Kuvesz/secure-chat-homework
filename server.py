@@ -62,6 +62,8 @@ while 1:
                 for j in range(len(conn)):
                     if i != j:
                         conn[j].socket.sendall(data)
+            elif data[0:3] == "KEY".encode('utf-8'):
+                conn[len(conn) - 1].socket.sendall(data)
             else:
                 mes.process_message(data, aes_key, sign_keys)
                 print(mes.sender)
@@ -77,17 +79,19 @@ while 1:
                     else:
                         conn[0].socket.sendall(data)
                         print("else")
-                elif mes.msgtype == "KEY":
-                    print("key")
-                    conn[len(conn)-1].socket.sendall(data)
-                elif mes.msgtype =="DAT":
-                    print("DAT came")
+                elif mes.msgtype =="END":
+                    print("END came")
+                    conn[i].socket.shutdown(socket.SHUT_RDWR)
+                    conn[i].socket.close()
+                    conn[i].active = False
+                    conn[i].join()
                     pass
                 # elif:
                 else:
                     print("Back where it come from")
                     conn[i].socket.sendall(data)
-        except:
+        except Exception as e:
+            print(e)
             continue
 
 

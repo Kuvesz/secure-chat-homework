@@ -48,7 +48,7 @@ class Message:
             self.validity = Sign.verify_signature(data[:-512], sign_key.publickey(), sign)
         elif msgtype == "KEY".encode('utf-8'):
             ciphertext = data[3:-512]
-            rsa_key = RSA.import_key("keypair.pem")
+            rsa_key = RSA.import_key("ownkey.pem")
             plaintext = RSA.decrypt(rsa_key, ciphertext)
             timestamp = plaintext[0:5]
             sender = plaintext[5:10]
@@ -70,7 +70,10 @@ class Message:
             self.msgtype = msgtype.decode('utf-8')
             self.sender = sender.decode('utf-8')
             self.time = int.from_bytes(timestamp, 'big')
-            self.msg = msg.decode('utf-8')
+            if self.msgtype != "KEY":
+                self.msg = msg.decode('utf-8')
+            else:
+                self.msg = msg
 
         return None
 

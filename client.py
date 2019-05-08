@@ -61,7 +61,7 @@ def main():
             break
         elif mes.msgtype == "KEY":
             print("KEYWAIT")
-            aes_key = mes.msg.encode('utf-8')
+            aes_key = mes.msg
             break
 
     print("Init Done\n")
@@ -86,7 +86,9 @@ def main():
                 print("KEYSENT")
             if mes.msgtype == "DAT":
                 print(mes.sender + ": " + mes.msg)
-
+            if mes.msgtype == "KEY":
+                print("key")
+                aes_key = mes.msg
         except:
             pass
 
