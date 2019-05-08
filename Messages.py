@@ -27,7 +27,7 @@ class Message:
         """
         msgtype = data[0:3]
 
-
+        #Process DAT message
         if msgtype == "DAT".encode('utf-8'):
             iv = data[3:19]
             ciphertext = data[19:-512]
@@ -39,6 +39,7 @@ class Message:
             msg = msg.strip(b' ')
             sign_key = self.get_sign_key(sender, sign_keys)
             self.validity = Sign.verify_signature(data[:-512], sign_key.publickey(), sign)
+        # Process INI message
         elif msgtype == "INI".encode('utf-8'):
             timestamp = data[3:8]
             sender = data[8:13]
@@ -46,6 +47,7 @@ class Message:
             sign = data[-512:]
             sign_key = self.get_sign_key(sender, sign_keys)
             self.validity = Sign.verify_signature(data[:-512], sign_key.publickey(), sign)
+        # Process KEY message
         elif msgtype == "KEY".encode('utf-8'):
             ciphertext = data[3:-512]
             rsa_key = RSA.import_key("ownkey.pem")
@@ -56,6 +58,7 @@ class Message:
             sign = data[-512:]
             sign_key = self.get_sign_key(sender, sign_keys)
             self.validity = Sign.verify_signature(data[:-512], sign_key.publickey(), sign)
+        # Process END message
         elif msgtype == "END".encode('utf-8'):
             iv = data[3:19]
             ciphertext = data[19:-512]
@@ -66,6 +69,7 @@ class Message:
             sign_key = self.get_sign_key(sender, sign_keys)
             self.validity = Sign.verify_signature(data[:-512], sign_key.publickey(), sign)
 
+        #If the signature is valid, the we save the other parameters
         if self.validity == True:
             self.msgtype = msgtype.decode('utf-8')
             self.sender = sender.decode('utf-8')

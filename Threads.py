@@ -2,7 +2,9 @@ import threading
 import Messages
 
 class input_reader (threading.Thread):
-
+    """
+    Helper class for user interface monitoring.
+    """
     def __init__(self, active):
         threading.Thread.__init__(self)
         self.input_list = []
@@ -16,7 +18,9 @@ class input_reader (threading.Thread):
             except:
                 pass
 class data_reader (threading.Thread):
-
+    """
+    Helper class for socket monitoring.
+    """
     def __init__(self, socket, active):
         threading.Thread.__init__(self)
         self.data_list = []
