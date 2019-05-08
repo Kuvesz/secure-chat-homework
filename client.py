@@ -75,6 +75,9 @@ def main():
             if mes.msgtype == "INI":
                 data = Messages.create_KEY_message(aes_key, Crypto.PublicKey.RSA.import_key(mes.msg.encode('utf-8')), sign_key, sender)
                 s.sendall(data)
+                data = Messages.create_DAT_message(mes.sender + " connected.", aes_key, sign_key, sender)
+                print(mes.sender + " connected.")
+                s.sendall(data)
             if mes.msgtype == "DAT":
                 print(mes.sender + ": " + mes.msg)
             if mes.msgtype == "KEY":
