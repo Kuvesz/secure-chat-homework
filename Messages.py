@@ -13,6 +13,7 @@ class Message:
         self.time = None
         self.msg = None
         self.validity = None
+        self.data = None
 
 
     def process_message(self, data, aes_key, sign_keys):
@@ -25,6 +26,7 @@ class Message:
         :return: None - the object is filled
         """
         msgtype = data[0:3]
+
 
         if msgtype == "DAT".encode('utf-8'):
             iv = data[3:19]

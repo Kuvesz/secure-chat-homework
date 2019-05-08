@@ -1,10 +1,10 @@
-import requests
 import socket
 import Messages
 import RSA_Helper as RSA
 import AES_Helper as AES
 import Crypto.PublicKey.RSA
-import os
+import Threads
+# import threading
 
 sign_keys =	{
     "Alice": "Alice_public_sign_key.pem",
@@ -13,6 +13,8 @@ sign_keys =	{
     "dummy": "dummy_public_sign_key.pem",
     "Serve": "Server_public_sign_key.pem"
 } ## Need to be exported to a file
+
+msg_list = []
 
 def main():
     print("Welcome to the most secure multi chat application!")
@@ -25,6 +27,7 @@ def main():
     # port = input("Please enter the port number of the secure server: ")
     ip = "localhost"
     port = "8080"
+
 
     sender = name
     # import own keys
@@ -43,33 +46,34 @@ def main():
     #initialize the Connection
     init = Messages.create_INI_message(rsa_key.publickey(), sign_key, sender)
     s.sendall(init)
-    s.settimeout(5)
+
+    input_thread = Threads.input_reader(True)
+    input_thread.start()
+
     while True:
-        try:
-            data = s.recv(4096)
-            mes = Messages.Message()
-            mes.process_message(data, None, sign_keys)
-            if mes.msgtype == "INI" and mes.sender == "Serve":
-                aes_key = AES.generate_key()
-                print("DONE")
-                break
-            if mes.msgtype == "KEY":
-                print("KEYWAIT")
-                aes_key = mes.msg.encode('utf-8')
-                break
-        except:
-            continue
-        # elif mes.msgtype == "INI" and mes.validity == True:
-    #     print("ELSE")
-    #     pass
-    s.settimeout(2)
+        print("IN")
+        data = s.recv(4096)
+        mes = Messages.Message()
+        mes.process_message(data, None, sign_keys)
+        if mes.msgtype == "INI" and mes.sender == "Serve":
+            aes_key = AES.generate_key()
+            print("DONE")
+            break
+        elif mes.msgtype == "KEY":
+            print("KEYWAIT")
+            aes_key = mes.msg.encode('utf-8')
+            break
+
+    print("Init Done\n")
+
+    data_thread = Threads.data_reader(s, True)
+    data_thread.start()
 
     while True:
 
         try:
-            print("wait")
-            data = s.recv(4096)
-            print("stsh")
+            data = data_thread.data_list.pop(0)
+            print("GOT")
             mes = Messages.Message()
             mes.process_message(data, aes_key, sign_keys)
             print(mes.validity)
@@ -77,26 +81,41 @@ def main():
             print(mes.msgtype)
             if mes.msgtype == "INI":
                 print("in")
-                data = Messages.create_KEY_message(aes_key, Crypto.PublicKey.RSA.import_key(mes.msg.decode('utf-8')), sign_key, sender)
+                data = Messages.create_KEY_message(aes_key, Crypto.PublicKey.RSA.import_key(mes.msg.encode('utf-8')), sign_key, sender)
                 s.sendall(data)
                 print("KEYSENT")
-
+            if mes.msgtype == "DAT":
+                print(mes.sender + ": " + mes.msg)
 
         except:
-            continue
+            pass
 
-        print('Received', repr(data))
+        try:
+            msg = input_thread.input_list.pop(0)
+            if msg == "END_CONN":
+                print("Connection is closed.\n")
+                break
 
-        msg = input("input: ")
+            data = Messages.create_DAT_message(msg, aes_key, sign_key, sender)
+            s.sendall(data)
+            print("SEND\n")
+        except:
+            pass
 
-        if msg == "END_CONN":
-            print("Connection is closed.")
+        if data_thread.end == True:
+            print("Server closed connection.\n")
             break
+        # print('Received', repr(data))
 
-        s.sendall(msg.encode('utf-8'))
+    #terminate threads
+    input_thread.active = False
+    data_thread.active = False
+    input_thread.join()
+    data_thread.join()
 
-
+    #Terminate socket
     s.shutdown(socket.SHUT_RDWR)
     s.close()
+    return
 
 main()
