@@ -51,16 +51,13 @@ def main():
     input_thread.start()
 
     while True:
-        print("IN")
         data = s.recv(4096)
         mes = Messages.Message()
         mes.process_message(data, None, sign_keys)
         if mes.msgtype == "INI" and mes.sender == "Serve":
             aes_key = AES.generate_key()
-            print("DONE")
             break
         elif mes.msgtype == "KEY":
-            print("KEYWAIT")
             aes_key = mes.msg
             break
 
@@ -73,21 +70,14 @@ def main():
 
         try:
             data = data_thread.data_list.pop(0)
-            print("GOT")
             mes = Messages.Message()
             mes.process_message(data, aes_key, sign_keys)
-            print(mes.validity)
-            print(mes.sender)
-            print(mes.msgtype)
             if mes.msgtype == "INI":
-                print("in")
                 data = Messages.create_KEY_message(aes_key, Crypto.PublicKey.RSA.import_key(mes.msg.encode('utf-8')), sign_key, sender)
                 s.sendall(data)
-                print("KEYSENT")
             if mes.msgtype == "DAT":
                 print(mes.sender + ": " + mes.msg)
             if mes.msgtype == "KEY":
-                print("key")
                 aes_key = mes.msg
         except:
             pass
@@ -100,7 +90,6 @@ def main():
 
             data = Messages.create_DAT_message(msg, aes_key, sign_key, sender)
             s.sendall(data)
-            print("SEND\n")
         except:
             pass
 

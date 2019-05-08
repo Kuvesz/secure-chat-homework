@@ -29,7 +29,6 @@ class data_reader (threading.Thread):
         while self.active:
             try:
                 data = self.socket.recv(4096)
-                print("recv")
                 if not data:
                     self.end = True
                 self.data_list.append(data)
